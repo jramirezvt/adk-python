@@ -15,7 +15,6 @@
 import re
 import this
 from typing import Any
-from unittest import mock
 
 from dateutil.parser import isoparse
 from google.adk.events import Event
@@ -24,6 +23,7 @@ from google.adk.sessions import Session
 from google.adk.sessions import VertexAiSessionService
 from google.genai import types
 import pytest
+
 
 MOCK_SESSION_JSON_1 = {
     'name': (
@@ -124,9 +124,7 @@ class MockApiClient:
     this.session_dict: dict[str, Any] = {}
     this.event_dict: dict[str, list[Any]] = {}
 
-  async def async_request(
-      self, http_method: str, path: str, request_dict: dict[str, Any]
-  ):
+  def request(self, http_method: str, path: str, request_dict: dict[str, Any]):
     """Mocks the API Client request method."""
     if http_method == 'GET':
       if re.match(SESSION_REGEX, path):
@@ -197,31 +195,22 @@ class MockApiClient:
 
 def mock_vertex_ai_session_service():
   """Creates a mock Vertex AI Session service for testing."""
-  return VertexAiSessionService(
+  service = VertexAiSessionService(
       project='test-project', location='test-location'
   )
-
-
-@pytest.fixture
-def mock_get_api_client():
-  api_client = MockApiClient()
-  api_client.session_dict = {
+  service.api_client = MockApiClient()
+  service.api_client.session_dict = {
       '1': MOCK_SESSION_JSON_1,
       '2': MOCK_SESSION_JSON_2,
       '3': MOCK_SESSION_JSON_3,
   }
-  api_client.event_dict = {
+  service.api_client.event_dict = {
       '1': MOCK_EVENT_JSON,
   }
-  with mock.patch(
-      "google.adk.sessions.vertex_ai_session_service._get_api_client",
-      return_value=api_client,
-    ):
-    yield
+  return service
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures('mock_get_api_client')
 async def test_get_empty_session():
   session_service = mock_vertex_ai_session_service()
   with pytest.raises(ValueError) as excinfo:
@@ -232,7 +221,6 @@ async def test_get_empty_session():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures('mock_get_api_client')
 async def test_get_and_delete_session():
   session_service = mock_vertex_ai_session_service()
 
@@ -254,7 +242,6 @@ async def test_get_and_delete_session():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures('mock_get_api_client')
 async def test_list_sessions():
   session_service = mock_vertex_ai_session_service()
   sessions = await session_service.list_sessions(app_name='123', user_id='user')
@@ -264,7 +251,6 @@ async def test_list_sessions():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures('mock_get_api_client')
 async def test_create_session():
   session_service = mock_vertex_ai_session_service()
 
@@ -284,7 +270,6 @@ async def test_create_session():
 
 
 @pytest.mark.asyncio
-@pytest.mark.usefixtures('mock_get_api_client')
 async def test_create_session_with_custom_session_id():
   session_service = mock_vertex_ai_session_service()
 

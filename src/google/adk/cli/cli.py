@@ -96,7 +96,6 @@ async def run_interactively(
       if event.content and event.content.parts:
         if text := ''.join(part.text or '' for part in event.content.parts):
           click.echo(f'[{event.author}]: {text}')
-  await runner.close()
 
 
 async def run_cli(
@@ -146,7 +145,7 @@ async def run_cli(
         input_path=input_file,
     )
   elif saved_session_file:
-    with open(saved_session_file, 'r', encoding='utf-8') as f:
+    with open(saved_session_file, 'r') as f:
       loaded_session = Session.model_validate_json(f.read())
 
     if loaded_session:
@@ -185,7 +184,7 @@ async def run_cli(
         user_id=session.user_id,
         session_id=session.id,
     )
-    with open(session_path, 'w', encoding='utf-8') as f:
+    with open(session_path, 'w') as f:
       f.write(session.model_dump_json(indent=2, exclude_none=True))
 
     print('Session saved to', session_path)

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from app_container_framework.llm_agent import LLMAgent
+from google.adk.agents import LLMAgent
 
 class ClassifierAgent(LLMAgent):
     """

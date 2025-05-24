@@ -24,7 +24,6 @@ sys.path.insert(0, kit_dir)
 # Import ADK framework and agent classes
 # It's good practice to initialize the framework if it provides central setup,
 # error handling, or logging, even for simple scripts.
-from app_container_framework.initialize import init_app_container_framework
 from contributing.samples.threat_intelligence_support.classifier_agent import ClassifierAgent
 from contributing.samples.threat_intelligence_support.responder_agent import ResponderAgent
 
@@ -32,11 +31,6 @@ def main():
     """
     Runs a demonstration of the Classifier and Responder agents.
     """
-    # Initialize the App Container Framework (if necessary for local execution)
-    # This might set up logging, configurations, etc.
-    # Based on hello_world/main.py, this seems like a good practice.
-    init_app_container_framework()
-
     # 1. Define a sample user input
     # sample_user_input = "USER: I think my computer has been infected with malware. Can you help?"
     # Let's try another input to test a different category
