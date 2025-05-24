@@ -57,7 +57,6 @@ class FunctionTool(BaseTool):
 
     super().__init__(name=name, description=doc)
     self.func = func
-    self._ignore_params = ['tool_context', 'input_stream']
 
   @override
   def _get_declaration(self) -> Optional[types.FunctionDeclaration]:
@@ -66,7 +65,7 @@ class FunctionTool(BaseTool):
             func=self.func,
             # The model doesn't understand the function context.
             # input_stream is for streaming tool
-            ignore_params=self._ignore_params,
+            ignore_params=['tool_context', 'input_stream'],
             variant=self._api_variant,
         )
     )

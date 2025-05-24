@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import os
-from app_container_framework.llm_agent import LLMAgent
+from google.adk.agents import LLMAgent
 
 class ResponderAgent(LLMAgent):
     """
